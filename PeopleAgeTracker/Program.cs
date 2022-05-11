@@ -1,11 +1,16 @@
+using Microsoft.EntityFrameworkCore;
+using PeopleAgeTracker.Data;
+using PeopleAgeTracker.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddDbContext<PeopleDBContext>(options => options.UseInMemoryDatabase(databaseName: "people"));
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddTransient<SeedData>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -18,10 +23,11 @@ if (!app.Environment.IsDevelopment())
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
+SeedDatabase();
 app.UseStaticFiles();
 app.UseRouting();
 
-app.MapSwagger();
+//app.MapSwagger();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
@@ -29,3 +35,9 @@ app.MapControllerRoute(
 app.MapFallbackToFile("index.html"); ;
 
 app.Run();
+void SeedDatabase() //can be placed at the very bottom under app.Run()
+{
+    using var scope = app.Services.CreateScope();
+    var dbInitializer = scope.ServiceProvider.GetRequiredService<SeedData>();
+    dbInitializer.Seed();
+}
