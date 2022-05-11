@@ -27,12 +27,6 @@ namespace PeopleAgeTracker.Controllers
             return new JsonResult(persons);
         }
 
-        // GET api/<PersonController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
 
         // POST api/<PersonController>
         [HttpPost]
