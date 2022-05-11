@@ -26,7 +26,25 @@ namespace PeopleAgeTracker.Controllers
             var persons = _peopleDBContext.People;
             return new JsonResult(persons);
         }
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        public JsonResult GetAge(int PersonId)
+        {
+            try
+            {
+                var tempper = _peopleDBContext.People.Where(x => x.PersonId == PersonId).Single();
+                if (tempper != null)
+                {
+                    return new JsonResult(tempper.Age.ToString());
+                }
+                return new JsonResult("Unsuccessfully");
+            }
+            catch (Exception)
+            {
 
+                return new JsonResult("Unsuccessfully");
+            }
+        }
 
         // POST api/<PersonController>
         [HttpPost]
